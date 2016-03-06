@@ -9,7 +9,7 @@ import {BrowserDomAdapter} from 'angular2/src/platform/browser/browser_adapter';
     <p>{{title}} z app component {{mouse_x}} {{left}} width: {{width}} start {{start_x}}</p>
     <div class="wrapper">
         <div></div>
-        <span [style.left]="drag ? left + '%' : 0" (mousedown)="drag=true; start_x = mouse_x" (mouseup)="drag=false"></span>
+        <span [style.left]="left + '%'" (mousedown)="drag=true;" (mouseup)="drag=false"></span>
     </div>
   `,
     styles: [`
@@ -66,8 +66,9 @@ export class SliderComponent {
 
     constructor(private el: ElementRef) { 
         console.log('---: ', this.el.nativeElement.children[0].offsetWidth);
-        console.log('---: ', this.el.nativeElement.querySelector(".wrapper").offsetWidth);
+        console.log('---: ', this.el.nativeElement.querySelector(".wrapper").offsetLeft);
         this.width = this.el.nativeElement.querySelector(".wrapper").offsetWidth;
+        this.start_x = this.el.nativeElement.querySelector(".wrapper").offsetLeft;
     }
     
     onDrag(m:boolean) {
@@ -83,7 +84,7 @@ export class SliderComponent {
         dom.on(dom.query("body"), "mousemove", e => {
             if(e.buttons == 0) this.drag =false;
             this.mouse_x = e.clientX;
-            if(this.start_x) {
+            if(this.start_x && this.drag) {
                 this.left = (this.mouse_x - this.start_x) * 100 / this.width;
                 this.left = parseFloat(this.left.toFixed(4));
                 if(this.left>100) this.left = 100;
@@ -102,4 +103,3 @@ export class SliderComponent {
     } 
 
 }
-
